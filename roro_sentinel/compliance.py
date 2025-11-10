@@ -1,34 +1,48 @@
 """
-RORO SENTINEL CFD TRADING SYSTEM
-================================
-LEGAL DISCLAIMER: This is algorithmic analysis software, NOT financial advice.
-Users must hold valid CFD trading licenses where required.
-CFDs are complex instruments with high risk of rapid loss due to leverage.
-Past correlations do not guarantee future performance; markets exhibit regime changes.
+RORO SENTINEL - SIGNAL GENERATION & ANALYSIS SYSTEM
+====================================================
+LEGAL DISCLAIMER: This is market analysis software, NOT financial advice.
+This system generates trading signals for educational and informational purposes only.
 
-REGULATORY COMPLIANCE:
-- Maximum leverage: 1:30 (ESMA) or 1:50 (ASIC) - Configurable
-- Position risk per trade: 0.25%-1.8% (hard-capped)
-- Daily loss limit: 3.0% (mandatory shutdown)
-- Manual confirmation required for all trades (human-in-the-loop)
+⚠️  SIGNAL-ONLY SYSTEM: This software does NOT execute trades automatically.
+All trading decisions and executions are YOUR responsibility.
 
-TRADER ACKNOWLEDGMENT REQUIRED:
-"I understand this system can generate false signals, correlation breakdowns,
-and that I am solely responsible for execution decisions."
+IMPORTANT NOTICES:
+- Signals are generated using historical correlations which may break down
+- Past performance does not guarantee future results
+- CFDs are complex instruments with high risk of rapid loss due to leverage
+- You must hold valid CFD trading licenses where required by your jurisdiction
+- Markets exhibit regime changes that can invalidate correlation-based strategies
+
+RISK ACKNOWLEDGMENT:
+Trading CFDs and forex carries a high level of risk and may not be suitable for all
+investors. The high degree of leverage can work against you as well as for you.
+Before deciding to trade, you should carefully consider your investment objectives,
+level of experience, and risk appetite.
+
+USER RESPONSIBILITY:
+"I understand this system generates signals that may be false or inaccurate.
+I am solely responsible for:
+- Deciding whether to act on any signal
+- Verifying all analysis before trading
+- Managing my own risk and position sizing
+- All trading decisions and their outcomes"
 """
 
-SYSTEM_RISK_LEVEL = "EXTREME"  # Do not modify
-REQUIRED_EXPERIENCE_YEARS = 3  # Minimum recommended trader experience
+SYSTEM_TYPE = "SIGNAL_GENERATION"  # Do not modify
+SYSTEM_RISK_LEVEL = "INFORMATIONAL"  # This is an analysis tool
+RECOMMENDED_EXPERIENCE_YEARS = 3  # Minimum recommended trader experience
 
 def display_compliance_warning():
     """Display compliance warning on startup"""
     print("=" * 80)
-    print("RORO SENTINEL CFD TRADING SYSTEM")
+    print("RORO SENTINEL - SIGNAL GENERATION & ANALYSIS SYSTEM")
     print("=" * 80)
     print(__doc__)
     print("=" * 80)
-    print(f"SYSTEM RISK LEVEL: {SYSTEM_RISK_LEVEL}")
-    print(f"REQUIRED EXPERIENCE: {REQUIRED_EXPERIENCE_YEARS} years minimum")
+    print(f"SYSTEM TYPE: {SYSTEM_TYPE}")
+    print(f"SYSTEM LEVEL: {SYSTEM_RISK_LEVEL}")
+    print(f"RECOMMENDED EXPERIENCE: {RECOMMENDED_EXPERIENCE_YEARS} years minimum")
     print("=" * 80)
 
 def require_acknowledgment() -> bool:

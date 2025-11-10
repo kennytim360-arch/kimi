@@ -1,32 +1,46 @@
-# RORO SENTINEL - CFD Trading System
+# RORO SENTINEL - Signal Generation & Analysis System
 
-**High-Risk Algorithmic Trading System - For Experienced Traders Only**
+**⚠️ THIS SYSTEM GENERATES TRADING SIGNALS - IT DOES NOT EXECUTE TRADES**
 
-## ⚠️ CRITICAL WARNING
+## 🎯 What This System Does
 
-This is a HIGH-RISK trading system designed for CFD (Contract for Difference) trading. CFDs have a 76-90% retail trader loss rate. This system:
+**RORO Sentinel is a SIGNAL GENERATOR, not an automated trader.**
 
-- Can lose money rapidly due to leverage
-- Requires manual confirmation for all trades
-- Is NOT financial advice
-- Should only be used by experienced traders (3+ years recommended)
-- Requires valid CFD trading licenses where applicable
+This system:
+- ✅ **Analyzes** market regime (Risk-On/Risk-Off)
+- ✅ **Detects** divergences between correlated instruments
+- ✅ **Generates** trading signals with entry, stop, and target levels
+- ✅ **Calculates** suggested position sizes based on risk parameters
+- ✅ **Displays** complete trade analysis for your review
+- ❌ **DOES NOT** place orders or execute trades automatically
+- ❌ **DOES NOT** connect to broker for order execution
 
-**You are solely responsible for all trading decisions.**
+**YOU must manually execute any trades you choose to take.**
+
+## ⚠️ IMPORTANT DISCLAIMER
+
+This is market analysis software, NOT financial advice:
+
+- Signals may be false or inaccurate
+- Past correlations do not guarantee future results
+- CFDs have a 76-90% retail trader loss rate
+- You must verify all analysis before trading
+- You are solely responsible for ALL trading decisions
+- Recommended for traders with 3+ years experience
 
 ## Overview
 
-RORO Sentinel is a Python-based algorithmic trading system that implements Risk-On/Risk-Off (RORO) regime detection combined with divergence trading strategies for CFD markets.
+RORO Sentinel implements Risk-On/Risk-Off (RORO) regime detection combined with divergence trading strategies to generate trading signals for CFD markets.
 
 ### Key Features
 
-- **VIX-Adaptive Regime Detection**: Automatically adjusts to market volatility
-- **Correlation Monitoring**: Tracks relationship health between key instruments
+- **VIX-Adaptive Regime Detection**: Automatically adjusts thresholds based on market volatility
+- **Correlation Monitoring**: Tracks relationship health between key instruments (SPX/USDJPY)
 - **Divergence Detection**: Identifies price-correlation divergences with false positive filters
-- **CFD-Specific Risk Management**: Leverage-aware position sizing with margin monitoring
-- **Human-in-the-Loop**: Mandatory manual confirmation for all trades
-- **Multi-Session Support**: Adapts to Asian, European, and US trading sessions
-- **Comprehensive Alerting**: Discord, Telegram, and webhook support
+- **Position Size Calculator**: Suggests leverage-aware position sizing based on risk parameters
+- **Multi-Session Awareness**: Adapts signal criteria to Asian, European, and US trading sessions
+- **Comprehensive Signal Display**: Shows entry, stop, target, risk/reward, and market context
+- **Alert System**: Optional Discord, Telegram, and webhook notifications for signals
 
 ## System Architecture
 
@@ -210,26 +224,33 @@ pytest roro_sentinel/tests/test_regime_engine.py -v
 pytest --cov=roro_sentinel roro_sentinel/tests/
 ```
 
-## Paper Trading
+## Using the Signals
 
-**MANDATORY before live trading:**
+**How to use this system:**
 
-1. Run in paper mode for minimum 2 weeks
-2. Monitor all signals and system behavior
-3. Verify risk limits are enforced
-4. Check alert system works correctly
-5. Document any issues
+1. **Run the System**: Start the signal generator in paper mode (uses mock data)
+2. **Review Signals**: When a signal is generated, review all the details provided
+3. **Verify Analysis**: Check the regime, correlation health, and market context
+4. **Make Your Decision**: Decide whether to take the trade based on your own analysis
+5. **Execute Manually**: If you choose to trade, place orders manually through your broker
+6. **Track Results**: Keep your own record of which signals you took and their outcomes
 
-## Going Live
+**Recommended Practice:**
 
-⚠️ **ONLY after successful paper trading:**
+- Run the system for 2+ weeks to understand the types of signals it generates
+- Track signal quality by paper trading or noting signals without trading
+- Only trade signals that align with your own market view
+- Always verify the market context before executing
+- Never blindly follow signals - use them as one input in your decision-making
 
-1. Complete `startup_checklist.md`
-2. Set `mode: "live"` in `settings.yaml`
-3. Configure broker API credentials
-4. **Keep manual confirmation ENABLED**
-5. Start during US Overlap session
-6. Monitor continuously for first 2 hours
+## Operational Modes
+
+The system has two data modes:
+
+1. **Paper Mode** (`mode: "paper"` in settings.yaml) - Uses mock data for testing
+2. **Live Mode** (`mode: "live"`) - Would connect to real data feeds (IBKR, etc.)
+
+**Note**: Regardless of mode, the system ONLY generates signals. It never places trades.
 
 ## Troubleshooting
 

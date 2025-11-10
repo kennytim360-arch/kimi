@@ -1,6 +1,7 @@
 """
-RORO SENTINEL CFD TRADING SYSTEM - Main Entry Point
-High-frequency regime detection and divergence trading system
+RORO SENTINEL - SIGNAL GENERATION & ANALYSIS SYSTEM
+Generates trading signals based on regime detection and divergence analysis
+THIS SYSTEM DOES NOT EXECUTE TRADES - It only provides signals for manual review
 """
 
 import asyncio
@@ -98,7 +99,7 @@ class ROROSentinel:
             sys.exit(1)
 
     async def start(self):
-        """Start the trading system"""
+        """Start the signal generation system"""
         # Display compliance warning
         compliance.display_compliance_warning()
 
@@ -108,7 +109,11 @@ class ROROSentinel:
             return
 
         logger.info("="*80)
-        logger.info("RORO SENTINEL STARTING")
+        logger.info("RORO SENTINEL - SIGNAL GENERATION SYSTEM")
+        logger.info("="*80)
+        logger.info("⚠️  SIGNAL-ONLY MODE: This system generates signals for manual review")
+        logger.info("⚠️  NO AUTOMATIC TRADING: You must manually execute all trades")
+        logger.info("="*80)
         logger.info(f"Mode: {self.config['system']['mode']}")
         logger.info(f"Data refresh rate: {self.config['system']['data_refresh_rate_ms']}ms")
         logger.info("="*80)
@@ -178,31 +183,12 @@ class ROROSentinel:
             await self._shutdown()
 
     async def _process_signal(self, signal):
-        """Process a trading signal"""
-        logger.info(f"\n{'='*60}")
-        logger.info("PROCESSING TRADE SIGNAL")
-        logger.info(f"{'='*60}")
+        """Display trading signal for manual execution"""
+        logger.info(f"\n{'='*80}")
+        logger.info("🎯 TRADING SIGNAL GENERATED - FOR MANUAL REVIEW")
+        logger.info(f"{'='*80}")
 
-        # 1. CHECK IF NEW POSITIONS ALLOWED
-        if not self.session_manager.should_allow_new_positions():
-            logger.warning("New positions not allowed in current session")
-            return
-
-        # 2. CHECK MARGIN SAFETY
-        if not await self.liquidation_guard.should_allow_new_position():
-            logger.warning("New positions blocked due to margin constraints")
-            return
-
-        # 3. REQUEST CONFIRMATION
-        confirmation = await self.trade_validator.request_confirmation(signal)
-
-        if not confirmation.confirmed:
-            logger.info(f"Trade NOT confirmed: {confirmation.reason}")
-            return
-
-        logger.info("✓ Trade CONFIRMED")
-
-        # 4. CALCULATE POSITION SIZE
+        # Calculate suggested position size
         account = await self.broker_api.get_account_summary()
         position_result = self.position_sizer.calculate_position_size(
             account_equity=account.equity,
@@ -214,21 +200,48 @@ class ROROSentinel:
             position_size_multiplier=signal.position_size_multiplier
         )
 
-        logger.info(f"Position size: {position_result.position_size:.2f} contracts")
-        logger.info(f"Risk amount: ${position_result.risk_amount:.2f}")
-        logger.info(f"Margin required: ${position_result.margin_required:.2f}")
-        logger.info(f"Reasoning: {position_result.reasoning}")
+        # Display complete signal details
+        logger.info("\n📊 SIGNAL DETAILS:")
+        logger.info(f"  Action:      {signal.signal_type.value.upper()}")
+        logger.info(f"  Instrument:  {signal.instrument}")
+        logger.info(f"  Priority:    {signal.priority.value}")
+        logger.info(f"  Confidence:  {signal.confidence:.1%}")
 
-        # 5. EXECUTE TRADE (in paper mode, just log)
-        logger.info("\n[TRADE EXECUTION]")
-        logger.info(f"  {signal.signal_type.value.upper()} {signal.instrument}")
-        logger.info(f"  Entry: {signal.suggested_entry:.2f}")
-        logger.info(f"  Stop: {signal.suggested_stop:.2f}")
-        logger.info(f"  Target: {signal.suggested_target:.2f}")
-        logger.info(f"  Size: {position_result.position_size:.2f}")
+        logger.info("\n💰 TRADE PARAMETERS:")
+        logger.info(f"  Entry Price: {signal.suggested_entry:.2f}")
+        logger.info(f"  Stop Loss:   {signal.suggested_stop:.2f}")
+        logger.info(f"  Target:      {signal.suggested_target:.2f}")
+        logger.info(f"  Risk/Reward: 1:{abs((signal.suggested_target - signal.suggested_entry) / (signal.suggested_entry - signal.suggested_stop)):.2f}")
 
-        # In production, would place actual order here
-        # order = await self.broker_api.place_order(...)
+        logger.info("\n📏 POSITION SIZING:")
+        logger.info(f"  Suggested Size:   {position_result.position_size:.2f} contracts")
+        logger.info(f"  Risk Amount:      ${position_result.risk_amount:.2f}")
+        logger.info(f"  Margin Required:  ${position_result.margin_required:.2f}")
+        logger.info(f"  Leverage Used:    {position_result.leverage_used:.1f}x")
+        logger.info(f"  Daily Swap Cost:  ${position_result.swap_cost:.2f}")
+
+        logger.info("\n📈 MARKET CONTEXT:")
+        logger.info(f"  Regime:       {signal.regime.regime_type.value}")
+        logger.info(f"  Regime Score: {signal.regime.score:.2f}")
+        logger.info(f"  Correlation:  {signal.regime.correlation_health:.2f}")
+        logger.info(f"  VIX Level:    {signal.regime.vix_level:.1f}")
+        logger.info(f"  Session:      {signal.regime.session}")
+
+        if signal.divergence:
+            logger.info("\n🔍 DIVERGENCE DETECTED:")
+            logger.info(f"  Type:       {signal.divergence.type.value}")
+            logger.info(f"  Magnitude:  {signal.divergence.magnitude:.2%}")
+            logger.info(f"  Confidence: {signal.divergence.confidence:.1%}")
+
+        logger.info("\n💡 REASONING:")
+        logger.info(f"  {signal.reasoning}")
+
+        logger.info("\n⚠️  RISK NOTES:")
+        logger.info(f"  {position_result.reasoning}")
+
+        logger.info("\n" + "="*80)
+        logger.info("⚠️  MANUAL EXECUTION REQUIRED - This is a signal only, not an order")
+        logger.info("="*80 + "\n")
 
     async def _monitor_positions(self):
         """Monitor existing positions"""
