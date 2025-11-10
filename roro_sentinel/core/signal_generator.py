@@ -11,9 +11,9 @@ from enum import Enum
 import logging
 import uuid
 
-from core.regime_engine import RegimeType, RegimeClassification
-from core.divergence_detector import DivergenceSignal, DivergenceType
-from core.correlation_monitor import CorrelationHealth
+from .regime_engine import RegimeType, RegimeClassification
+from .divergence_detector import DivergenceSignal, DivergenceType
+from .correlation_monitor import CorrelationHealth
 
 logger = logging.getLogger(__name__)
 
