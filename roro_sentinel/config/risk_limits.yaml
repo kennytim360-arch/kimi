@@ -1,0 +1,49 @@
+# config/risk_limits.yaml
+# Dynamic risk scaling based on account performance
+
+risk_tiers:
+  aggressive:
+    daily_risk_percent: 3.0
+    per_trade_risk_percent: 1.8
+    max_leverage: 30
+    min_confidence_threshold: 0.60
+    description: "Full power - use when system performing well"
+
+  moderate:
+    daily_risk_percent: 2.0
+    per_trade_risk_percent: 1.2
+    max_leverage: 20
+    min_confidence_threshold: 0.70
+    description: "Scaled back - after 2 consecutive losses"
+
+  conservative:
+    daily_risk_percent: 1.0
+    per_trade_risk_percent: 0.6
+    max_leverage: 10
+    min_confidence_threshold: 0.80
+    description: "Defensive mode - after 3+ losses or 2% daily loss"
+
+  locked:
+    daily_risk_percent: 0.0
+    per_trade_risk_percent: 0.0
+    max_leverage: 0
+    description: "System shutdown - 3% daily loss limit reached"
+
+# Auto-scaling triggers
+auto_scaling:
+  downgrade_triggers:
+    consecutive_losses: 2  # Aggressive -> Moderate
+    daily_loss_threshold: 0.015  # 1.5% loss -> Conservative
+    correlation_breakdown: 0.40  # Below 0.40 -> Conservative
+
+  upgrade_triggers:
+    consecutive_wins: 3  # Conservative -> Moderate
+    daily_profit_threshold: 0.01  # 1% profit -> can upgrade
+    stable_correlation_periods: 20  # 20 periods above 0.65
+
+# Emergency shutdowns
+emergency_stops:
+  max_daily_loss: 0.03  # 3% hard stop
+  max_consecutive_losses: 5
+  min_margin_level: 1.50  # Below 150% = force close
+  correlation_critical: 0.30  # Below 0.30 = stop all trading

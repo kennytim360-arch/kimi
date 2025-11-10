@@ -1,0 +1,95 @@
+# config/settings.yaml
+system:
+  mode: "paper"  # "paper" | "live" | "backtest"
+  timezone: "GMT"
+  data_refresh_rate_ms: 60000  # 1-minute primary update
+  correlation_update_rate_ms: 300000  # 5-minute correlation
+
+instruments:
+  primary_gauges:
+    - symbol: "US500"
+      type: "CFD"
+      broker_symbol: "IBUS500"  # IBKR example
+      update_interval: "1min"
+      weight: 0.35
+
+    - symbol: "USDJPY"
+      type: "FOREX"
+      broker_symbol: "USDJPY"
+      update_interval: "1min"
+      weight: 0.30
+
+    - symbol: "VIX"
+      type: "INDEX"
+      broker_symbol: "INDCBOEVIX"
+      update_interval: "1min"
+      weight: 0.20
+
+    - symbol: "US10Y"
+      type: "YIELD"
+      update_interval: "5min"
+      weight: 0.10
+
+    - symbol: "DXY"
+      type: "INDEX"
+      update_interval: "5min"
+      weight: 0.05
+
+  satellite_instruments:
+    DAX: {weight: 0.15}
+    NAS100: {weight: 0.15}
+    AUDJPY: {weight: 0.10}
+    XAUUSD: {weight: 0.10}
+    EURJPY: {weight: 0.10}
+
+correlation:
+  lookback_periods: 20
+  min_periods_for_valid: 15
+  healthy_threshold: 0.65
+  critical_breakdown: 0.40
+  volatility_limit: 0.15  # Max std dev of correlation series
+
+regime:
+  vix_levels:
+    low: {max: 15, threshold_multiplier: 1.0}
+    moderate: {min: 15, max: 25, threshold_multiplier: 0.8}
+    high: {min: 25, max: 40, threshold_multiplier: 0.6}
+    extreme: {min: 40, threshold_multiplier: 0.4}
+
+  base_threshold_percent: 0.2  # 0.2% base move threshold
+  score_classification:
+    strong_risk_on: {min: 3, max: 4}
+    weak_risk_on: {min: 1.5, max: 3}
+    neutral: {min: -1.5, max: 1.5}
+    weak_risk_off: {min: -3, max: -1.5}
+    strong_risk_off: {max: -3}
+
+risk:
+  max_daily_risk_percent: 3.0
+  max_per_trade_risk_percent: 1.8
+  divergence_penalty: 0.50  # 50% size reduction
+  correlation_break_penalty: 0.30
+
+  # CFD-SPECIFIC
+  max_leverage: 30  # ESMA compliance
+  swap_cost_threshold: -10  # USD per day
+  spread_widening_limit: 2.0  # x normal spread
+
+  # LIQUIDATION PREVENTION
+  min_equity_buffer_percent: 25  # 25% above margin requirement
+  liquidation_early_warning: 0.35  # Alert at 35% drawdown
+
+execution:
+  require_manual_confirmation: true
+  confirmation_timeout_seconds: 30
+  alert_channels:
+    - type: "discord"
+      webhook_url: "${DISCORD_WEBHOOK_URL}"
+      severity_levels: ["P0", "P1"]
+    - type: "telegram"
+      bot_token: "${TELEGRAM_BOT_TOKEN}"
+      chat_id: "${TELEGRAM_CHAT_ID}"
+      severity_levels: ["P0", "P1", "P2"]
+    - type: "webhook"
+      url: "${TRADINGVIEW_WEBHOOK_URL}"
+      mode: "paper"  # or "live"

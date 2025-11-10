@@ -1,0 +1,47 @@
+# config/session_rules.yaml
+# Session-specific parameter adjustments
+
+sessions:
+  ASIAN:
+    hours: "00:00-08:00 GMT"
+    threshold_multiplier: 0.6  # Lower thresholds
+    usdjpy_weight: 0.35  # Increased weight
+    max_position_size_multiplier: 0.5  # 50% max size
+    description: "Tokyo session - USDJPY primary driver"
+
+  EUROPEAN:
+    hours: "08:00-13:00 GMT"
+    threshold_multiplier: 0.85
+    dax_weight: 0.20
+    max_position_size_multiplier: 0.75
+    description: "London session - European equities focus"
+
+  US_OVERLAP:
+    hours: "13:00-16:00 GMT"
+    threshold_multiplier: 1.0  # Full power
+    vix_weight: 0.25
+    max_position_size_multiplier: 1.0
+    description: "Highest volume - optimal trading window"
+
+  US_ONLY:
+    hours: "16:00-21:00 GMT"
+    threshold_multiplier: 0.9
+    vix_weight: 0.30  # Increased VIX focus
+    max_position_size_multiplier: 0.8
+    description: "Late US session - volatility focus"
+
+  CLOSED:
+    hours: "21:00-00:00 GMT"
+    threshold_multiplier: 0.0
+    max_position_size_multiplier: 0.0
+    description: "Low liquidity - no new positions"
+    force_close_before: "20:55 GMT"
+
+# Holiday schedules
+holidays:
+  - date: "2025-01-01"
+    description: "New Year's Day"
+    reduced_hours: true
+  - date: "2025-12-25"
+    description: "Christmas Day"
+    market_closed: true
