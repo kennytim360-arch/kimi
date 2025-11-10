@@ -4,7 +4,7 @@ Publishes alerts to multiple channels (Discord, Telegram, Webhooks)
 """
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from typing import List, Dict, Optional
 from enum import Enum
 import logging
@@ -34,7 +34,7 @@ class AlertMessage:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.now(datetime.UTC)
+            self.timestamp = datetime.now(timezone.utc)
 
     def format_for_channel(self) -> str:
         """Format message for display"""
@@ -191,7 +191,7 @@ class AlertPublisher:
                 logger.warning("P0 alert rate limit reached. Queueing alert.")
                 await asyncio.sleep(300)  # Wait 5 minutes
 
-            self.p0_alert_times.append(datetime.now(datetime.UTC))
+            self.p0_alert_times.append(datetime.now(timezone.utc))
 
         # Format message
         formatted_message = alert.format_for_channel()
@@ -228,7 +228,7 @@ class AlertPublisher:
 
     def _p0_alert_count_in_last_15min(self) -> int:
         """Count P0 alerts in last 15 minutes"""
-        cutoff = datetime.now(datetime.UTC) - timedelta(minutes=15)
+        cutoff = datetime.now(timezone.utc) - timedelta(minutes=15)
         self.p0_alert_times = [t for t in self.p0_alert_times if t > cutoff]
         return len(self.p0_alert_times)
 

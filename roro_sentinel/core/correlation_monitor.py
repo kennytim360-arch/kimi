@@ -4,7 +4,7 @@ Tracks correlation health between key instruments
 """
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List
 from enum import Enum
 import logging
@@ -33,7 +33,7 @@ class CorrelationStatus:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.now(datetime.UTC)
+            self.timestamp = datetime.now(timezone.utc)
 
 
 class CorrelationMonitor:
@@ -99,7 +99,7 @@ class CorrelationMonitor:
                 correlation=corr,
                 volatility=corr_vol,
                 health=health,
-                timestamp=datetime.now(datetime.UTC),
+                timestamp=datetime.now(timezone.utc),
                 lookback_periods=lookback
             )
 
@@ -170,7 +170,7 @@ class CorrelationMonitor:
         recent = self.correlation_history[-20:]  # Last 20 checks
 
         report = {
-            "timestamp": datetime.now(datetime.UTC),
+            "timestamp": datetime.now(timezone.utc),
             "overall_health": "HEALTHY",
             "pairs": {}
         }

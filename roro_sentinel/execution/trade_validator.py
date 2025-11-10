@@ -4,7 +4,7 @@ CRITICAL SAFETY LAYER - No trade executes without manual confirmation
 """
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Optional
 from enum import Enum
 import logging
@@ -24,7 +24,7 @@ class ConfirmationResponse:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.now(datetime.UTC)
+            self.timestamp = datetime.now(timezone.utc)
 
 
 class TradeValidator:
@@ -53,7 +53,7 @@ class TradeValidator:
             return ConfirmationResponse(
                 trade_id=trade_id,
                 confirmed=False,
-                timestamp=datetime.now(datetime.UTC),
+                timestamp=datetime.now(timezone.utc),
                 reason="Trader not ready (check loss limits or emotional state)"
             )
 
@@ -72,14 +72,14 @@ class TradeValidator:
             return ConfirmationResponse(
                 trade_id=trade_id,
                 confirmed=True,
-                timestamp=datetime.now(datetime.UTC),
+                timestamp=datetime.now(timezone.utc),
                 reason="Auto-confirmed (manual confirmation disabled)"
             )
 
         # Store as pending
         self.pending_trades[trade_id] = {
             'signal': signal,
-            'timestamp': datetime.now(datetime.UTC)
+            'timestamp': datetime.now(timezone.utc)
         }
 
         confirmed = False
@@ -101,7 +101,7 @@ class TradeValidator:
         return ConfirmationResponse(
             trade_id=trade_id,
             confirmed=confirmed,
-            timestamp=datetime.now(datetime.UTC),
+            timestamp=datetime.now(timezone.utc),
             reason="Manual confirmation" if confirmed else "Timeout or rejection"
         )
 
@@ -176,7 +176,7 @@ class TradeValidator:
             return True
 
         # CHECK 3: Market hours (prevent late-night trading)
-        current_hour = datetime.now(datetime.UTC).hour
+        current_hour = datetime.now(timezone.utc).hour
         if 0 <= current_hour < 5:  # 00:00-05:00 GMT is low liquidity
             logger.info("Low liquidity hours - trading not recommended")
             return False
@@ -185,7 +185,7 @@ class TradeValidator:
 
     def _count_recent_losses(self, minutes: int = 60) -> int:
         """Count number of losses in recent time period"""
-        cutoff = datetime.now(datetime.UTC).timestamp() - (minutes * 60)
+        cutoff = datetime.now(timezone.utc).timestamp() - (minutes * 60)
         recent = [loss for loss in self.today_losses
                  if loss['timestamp'].timestamp() > cutoff]
         return len(recent)
@@ -196,7 +196,7 @@ class TradeValidator:
             self.today_losses.append({
                 'trade_id': trade_id,
                 'pnl': pnl,
-                'timestamp': datetime.now(datetime.UTC)
+                'timestamp': datetime.now(timezone.utc)
             })
 
         # Update today's loss amount
@@ -220,7 +220,7 @@ class TradeValidator:
                 'signal_type': data['signal'].signal_type.value,
                 'confidence': data['signal'].confidence,
                 'timestamp': data['timestamp'],
-                'age_seconds': (datetime.now(datetime.UTC) - data['timestamp']).total_seconds()
+                'age_seconds': (datetime.now(timezone.utc) - data['timestamp']).total_seconds()
             }
             for trade_id, data in self.pending_trades.items()
         }

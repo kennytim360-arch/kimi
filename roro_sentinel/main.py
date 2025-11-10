@@ -8,7 +8,7 @@ import asyncio
 import logging
 import yaml
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 # Import compliance module first
@@ -131,7 +131,7 @@ class ROROSentinel:
             while self.running:
                 iteration += 1
                 logger.info(f"\n{'='*80}")
-                logger.info(f"ITERATION {iteration} - {datetime.now(datetime.UTC).strftime('%Y-%m-%d %H:%M:%S UTC')}")
+                logger.info(f"ITERATION {iteration} - {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}")
                 logger.info(f"{'='*80}")
 
                 # 1. CHECK SESSION

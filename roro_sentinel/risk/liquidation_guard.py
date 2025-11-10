@@ -4,7 +4,7 @@ Monitors margin levels and prevents liquidation/margin calls
 """
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Dict
 from enum import Enum
 import logging
@@ -35,7 +35,7 @@ class MarginStatus:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.now(datetime.UTC)
+            self.timestamp = datetime.now(timezone.utc)
 
 
 class LiquidationGuard:
@@ -203,7 +203,7 @@ class LiquidationGuard:
         recent = self.margin_history[-20:]  # Last 20 checks
 
         return {
-            "timestamp": datetime.now(datetime.UTC),
+            "timestamp": datetime.now(timezone.utc),
             "current_level": recent[-1].level.value,
             "current_ratio": recent[-1].margin_ratio,
             "equity": recent[-1].equity,

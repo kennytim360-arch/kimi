@@ -4,7 +4,7 @@ Tracks swap costs, spreads, and overall position costs
 """
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List
 import logging
 
@@ -24,7 +24,7 @@ class CFDCostSnapshot:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.now(datetime.UTC)
+            self.timestamp = datetime.now(timezone.utc)
 
 
 class CFDCostMonitor:
@@ -65,7 +65,7 @@ class CFDCostMonitor:
             spread_cost=spread_cost,
             commission=commission,
             total_cost_daily=total_cost,
-            timestamp=datetime.now(datetime.UTC)
+            timestamp=datetime.now(timezone.utc)
         )
 
         self.cost_history.append(snapshot)
@@ -151,7 +151,7 @@ class CFDCostMonitor:
             by_instrument[inst].append(snapshot)
 
         report = {
-            "timestamp": datetime.now(datetime.UTC),
+            "timestamp": datetime.now(timezone.utc),
             "instruments": {}
         }
 

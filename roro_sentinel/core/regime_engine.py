@@ -4,7 +4,7 @@ VIX-adaptive regime detection with false positive filters
 """
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Optional
 from enum import Enum
 import logging
@@ -46,7 +46,7 @@ class RegimeClassification:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.now(datetime.UTC)
+            self.timestamp = datetime.now(timezone.utc)
 
 
 class RegimeEngine:
@@ -78,7 +78,7 @@ class RegimeEngine:
                 vix_level=0.0,
                 threshold_used=0.0,
                 confidence=0.0,
-                timestamp=datetime.now(datetime.UTC),
+                timestamp=datetime.now(timezone.utc),
                 session=current_session,
                 status="DATA_ERROR",
                 reason=str(e)
@@ -112,7 +112,7 @@ class RegimeEngine:
                 vix_level=vix_level,
                 threshold_used=threshold,
                 confidence=0.0,
-                timestamp=datetime.now(datetime.UTC),
+                timestamp=datetime.now(timezone.utc),
                 session=current_session,
                 status="UNRELIABLE",
                 reason="Correlation instability"
@@ -169,7 +169,7 @@ class RegimeEngine:
             vix_level=vix_level,
             threshold_used=threshold,
             confidence=confidence,
-            timestamp=datetime.now(datetime.UTC),
+            timestamp=datetime.now(timezone.utc),
             session=current_session,
             status="OK"
         )

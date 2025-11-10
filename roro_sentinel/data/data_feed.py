@@ -6,7 +6,7 @@ Supports: IBKR API, Polygon.io, AlphaVantage, Historical CSV, Mock data
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, Tuple, Dict
 import pandas as pd
 import numpy as np
@@ -128,7 +128,7 @@ class MockDataFeed(DataFeed):
         return MarketQuote(
             symbol=symbol,
             price=new_price,
-            timestamp=datetime.now(datetime.UTC),
+            timestamp=datetime.now(timezone.utc),
             volume=np.random.randint(1000, 10000),
             bid=bid,
             ask=ask,
@@ -144,7 +144,7 @@ class MockDataFeed(DataFeed):
 
         # Generate realistic OHLCV data
         timestamps = pd.date_range(
-            end=datetime.now(datetime.UTC),
+            end=datetime.now(timezone.utc),
             periods=bars,
             freq=self._interval_to_freq(interval)
         )

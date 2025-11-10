@@ -5,7 +5,7 @@ to generate high-probability trade signals
 """
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, Dict
 from enum import Enum
 import logging
@@ -52,7 +52,7 @@ class TradeSignal:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.now(datetime.UTC)
+            self.timestamp = datetime.now(timezone.utc)
         if not self.id:
             self.id = str(uuid.uuid4())[:8]
 
@@ -121,7 +121,7 @@ class SignalGenerator:
             suggested_stop=0.0,
             suggested_target=0.0,
             position_size_multiplier=0.0,
-            timestamp=datetime.now(datetime.UTC),
+            timestamp=datetime.now(timezone.utc),
             reasoning="No high-probability setup detected"
         )
 
@@ -160,7 +160,7 @@ class SignalGenerator:
             suggested_stop=0.0,
             suggested_target=0.0,
             position_size_multiplier=0.0,
-            timestamp=datetime.now(datetime.UTC),
+            timestamp=datetime.now(timezone.utc),
             reasoning=f"REGIME SHIFT DETECTED: {regime.regime_type.value}"
         )
 
@@ -211,7 +211,7 @@ class SignalGenerator:
             suggested_stop=stop_price,
             suggested_target=target_price,
             position_size_multiplier=size_multiplier,
-            timestamp=datetime.now(datetime.UTC),
+            timestamp=datetime.now(timezone.utc),
             reasoning=f"{divergence.type.value.upper()} divergence detected with "
                      f"{divergence.confidence:.1%} confidence. Regime: {regime.regime_type.value}"
         )
@@ -248,7 +248,7 @@ class SignalGenerator:
             suggested_stop=stop_price,
             suggested_target=target_price,
             position_size_multiplier=size_multiplier,
-            timestamp=datetime.now(datetime.UTC),
+            timestamp=datetime.now(timezone.utc),
             reasoning=f"Strong regime: {regime.regime_type.value} with "
                      f"{regime.confidence:.1%} confidence"
         )

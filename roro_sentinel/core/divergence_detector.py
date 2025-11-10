@@ -4,7 +4,7 @@ Detects price-correlation divergences with robustness checks
 """
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional, Dict, Callable
 from enum import Enum
 import logging
@@ -33,7 +33,7 @@ class DivergenceSignal:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.now(datetime.UTC)
+            self.timestamp = datetime.now(timezone.utc)
         if self.details is None:
             self.details = {}
 
@@ -169,7 +169,7 @@ class DivergenceEngine:
                             confidence=self._calculate_divergence_strength(magnitude, corr),
                             magnitude=magnitude,
                             correlation=corr,
-                            timestamp=datetime.now(datetime.UTC),
+                            timestamp=datetime.now(timezone.utc),
                             details={
                                 "spx_low_1": spx_lows[-2],
                                 "spx_low_2": spx_lows[-1],
@@ -195,7 +195,7 @@ class DivergenceEngine:
                             confidence=self._calculate_divergence_strength(magnitude, corr),
                             magnitude=magnitude,
                             correlation=corr,
-                            timestamp=datetime.now(datetime.UTC),
+                            timestamp=datetime.now(timezone.utc),
                             details={
                                 "spx_high_1": spx_highs[-2],
                                 "spx_high_2": spx_highs[-1],
@@ -234,7 +234,7 @@ class DivergenceEngine:
                         confidence=self._calculate_divergence_strength(magnitude, corr),
                         magnitude=magnitude,
                         correlation=corr,
-                        timestamp=datetime.now(datetime.UTC)
+                        timestamp=datetime.now(timezone.utc)
                     )
 
             return None

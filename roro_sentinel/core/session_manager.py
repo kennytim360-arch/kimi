@@ -4,7 +4,7 @@ Dynamic parameter adjustment based on market session
 """
 
 from enum import Enum
-from datetime import datetime, time
+from datetime import datetime, timezone, time
 from typing import Dict
 from copy import deepcopy
 import logging
@@ -40,7 +40,7 @@ class SessionManager:
 
     def get_current_session(self) -> TradingSession:
         """Determine current trading session based on GMT time"""
-        now = datetime.now(datetime.UTC).time()
+        now = datetime.now(timezone.utc).time()
 
         # Define session boundaries
         if time(0, 0) <= now < time(8, 0):
@@ -122,7 +122,7 @@ class SessionManager:
 
     def is_position_closure_required(self) -> bool:
         """US late session: Must close positions by 20:55 GMT"""
-        current_time = datetime.now(datetime.UTC).time()
+        current_time = datetime.now(timezone.utc).time()
         session = self.get_current_session()
 
         # Force close before low liquidity period
@@ -162,13 +162,13 @@ class SessionManager:
             "max_position_size_multiplier": session_config.get('max_position_size_multiplier', 1.0),
             "allow_new_positions": self.should_allow_new_positions(),
             "closure_required": self.is_position_closure_required(),
-            "current_time_gmt": datetime.now(datetime.UTC).strftime('%H:%M:%S')
+            "current_time_gmt": datetime.now(timezone.utc).strftime('%H:%M:%S')
         }
 
     def is_holiday(self, date: datetime = None) -> bool:
         """Check if current date is a holiday"""
         if date is None:
-            date = datetime.now(datetime.UTC)
+            date = datetime.now(timezone.utc)
 
         holidays = self.session_rules.get('holidays', [])
 
