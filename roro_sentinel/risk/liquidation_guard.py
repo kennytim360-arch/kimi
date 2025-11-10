@@ -35,7 +35,7 @@ class MarginStatus:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.utcnow()
+            self.timestamp = datetime.now(datetime.UTC)
 
 
 class LiquidationGuard:
@@ -203,7 +203,7 @@ class LiquidationGuard:
         recent = self.margin_history[-20:]  # Last 20 checks
 
         return {
-            "timestamp": datetime.utcnow(),
+            "timestamp": datetime.now(datetime.UTC),
             "current_level": recent[-1].level.value,
             "current_ratio": recent[-1].margin_ratio,
             "equity": recent[-1].equity,

@@ -128,7 +128,7 @@ class MockDataFeed(DataFeed):
         return MarketQuote(
             symbol=symbol,
             price=new_price,
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(datetime.UTC),
             volume=np.random.randint(1000, 10000),
             bid=bid,
             ask=ask,
@@ -144,7 +144,7 @@ class MockDataFeed(DataFeed):
 
         # Generate realistic OHLCV data
         timestamps = pd.date_range(
-            end=datetime.utcnow(),
+            end=datetime.now(datetime.UTC),
             periods=bars,
             freq=self._interval_to_freq(interval)
         )
@@ -183,13 +183,13 @@ class MockDataFeed(DataFeed):
     def _interval_to_freq(self, interval: str) -> str:
         """Convert interval string to pandas frequency"""
         mapping = {
-            "1min": "1T",
-            "5min": "5T",
-            "15min": "15T",
-            "1h": "1H",
+            "1min": "1min",
+            "5min": "5min",
+            "15min": "15min",
+            "1h": "1h",
             "1d": "1D"
         }
-        return mapping.get(interval, "1T")
+        return mapping.get(interval, "1min")
 
 
 class IBKRDataFeed(DataFeed):

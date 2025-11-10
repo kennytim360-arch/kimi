@@ -24,7 +24,7 @@ class CFDCostSnapshot:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.utcnow()
+            self.timestamp = datetime.now(datetime.UTC)
 
 
 class CFDCostMonitor:
@@ -65,7 +65,7 @@ class CFDCostMonitor:
             spread_cost=spread_cost,
             commission=commission,
             total_cost_daily=total_cost,
-            timestamp=datetime.utcnow()
+            timestamp=datetime.now(datetime.UTC)
         )
 
         self.cost_history.append(snapshot)
@@ -151,7 +151,7 @@ class CFDCostMonitor:
             by_instrument[inst].append(snapshot)
 
         report = {
-            "timestamp": datetime.utcnow(),
+            "timestamp": datetime.now(datetime.UTC),
             "instruments": {}
         }
 

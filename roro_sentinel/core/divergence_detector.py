@@ -33,7 +33,7 @@ class DivergenceSignal:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.utcnow()
+            self.timestamp = datetime.now(datetime.UTC)
         if self.details is None:
             self.details = {}
 
@@ -169,7 +169,7 @@ class DivergenceEngine:
                             confidence=self._calculate_divergence_strength(magnitude, corr),
                             magnitude=magnitude,
                             correlation=corr,
-                            timestamp=datetime.utcnow(),
+                            timestamp=datetime.now(datetime.UTC),
                             details={
                                 "spx_low_1": spx_lows[-2],
                                 "spx_low_2": spx_lows[-1],
@@ -195,7 +195,7 @@ class DivergenceEngine:
                             confidence=self._calculate_divergence_strength(magnitude, corr),
                             magnitude=magnitude,
                             correlation=corr,
-                            timestamp=datetime.utcnow(),
+                            timestamp=datetime.now(datetime.UTC),
                             details={
                                 "spx_high_1": spx_highs[-2],
                                 "spx_high_2": spx_highs[-1],
@@ -234,7 +234,7 @@ class DivergenceEngine:
                         confidence=self._calculate_divergence_strength(magnitude, corr),
                         magnitude=magnitude,
                         correlation=corr,
-                        timestamp=datetime.utcnow()
+                        timestamp=datetime.now(datetime.UTC)
                     )
 
             return None

@@ -51,7 +51,7 @@ class Order:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.utcnow()
+            self.timestamp = datetime.now(datetime.UTC)
 
 
 @dataclass
@@ -68,7 +68,7 @@ class Position:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.utcnow()
+            self.timestamp = datetime.now(datetime.UTC)
 
 
 @dataclass
@@ -86,7 +86,7 @@ class AccountSummary:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.utcnow()
+            self.timestamp = datetime.now(datetime.UTC)
 
 
 class BrokerAPI(ABC):

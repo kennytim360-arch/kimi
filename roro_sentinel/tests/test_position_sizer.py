@@ -110,8 +110,10 @@ def test_daily_risk_limit(config):
     """Test daily risk limit enforcement"""
     calculator = CFDRiskCalculator(config)
 
-    # Use up most of daily risk
-    calculator.today_risk_used = 2.8  # 2.8% of 3% max
+    # Use up most of daily risk (in dollar amounts)
+    # Max daily risk = 3% of 100k = $3,000
+    # Use $2,800, leaving only $200 available
+    calculator.today_risk_used = 2800
 
     result = calculator.calculate_position_size(
         account_equity=100000,
@@ -123,8 +125,8 @@ def test_daily_risk_limit(config):
         position_size_multiplier=1.0
     )
 
-    # Should only allow remaining 0.2%
-    assert result.risk_amount <= 200  # 0.2% of 100k
+    # Should only allow remaining $200 (0.2% of 100k)
+    assert result.risk_amount <= 200
 
 
 def test_reset_daily_risk(config):

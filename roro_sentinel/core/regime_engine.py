@@ -46,7 +46,7 @@ class RegimeClassification:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.utcnow()
+            self.timestamp = datetime.now(datetime.UTC)
 
 
 class RegimeEngine:
@@ -78,7 +78,7 @@ class RegimeEngine:
                 vix_level=0.0,
                 threshold_used=0.0,
                 confidence=0.0,
-                timestamp=datetime.utcnow(),
+                timestamp=datetime.now(datetime.UTC),
                 session=current_session,
                 status="DATA_ERROR",
                 reason=str(e)
@@ -112,7 +112,7 @@ class RegimeEngine:
                 vix_level=vix_level,
                 threshold_used=threshold,
                 confidence=0.0,
-                timestamp=datetime.utcnow(),
+                timestamp=datetime.now(datetime.UTC),
                 session=current_session,
                 status="UNRELIABLE",
                 reason="Correlation instability"
@@ -169,7 +169,7 @@ class RegimeEngine:
             vix_level=vix_level,
             threshold_used=threshold,
             confidence=confidence,
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(datetime.UTC),
             session=current_session,
             status="OK"
         )

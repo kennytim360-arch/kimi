@@ -24,7 +24,7 @@ class ConfirmationResponse:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.utcnow()
+            self.timestamp = datetime.now(datetime.UTC)
 
 
 class TradeValidator:
@@ -53,7 +53,7 @@ class TradeValidator:
             return ConfirmationResponse(
                 trade_id=trade_id,
                 confirmed=False,
-                timestamp=datetime.utcnow(),
+                timestamp=datetime.now(datetime.UTC),
                 reason="Trader not ready (check loss limits or emotional state)"
             )
 
@@ -72,14 +72,14 @@ class TradeValidator:
             return ConfirmationResponse(
                 trade_id=trade_id,
                 confirmed=True,
-                timestamp=datetime.utcnow(),
+                timestamp=datetime.now(datetime.UTC),
                 reason="Auto-confirmed (manual confirmation disabled)"
             )
 
         # Store as pending
         self.pending_trades[trade_id] = {
             'signal': signal,
-            'timestamp': datetime.utcnow()
+            'timestamp': datetime.now(datetime.UTC)
         }
 
         confirmed = False
@@ -101,7 +101,7 @@ class TradeValidator:
         return ConfirmationResponse(
             trade_id=trade_id,
             confirmed=confirmed,
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(datetime.UTC),
             reason="Manual confirmation" if confirmed else "Timeout or rejection"
         )
 
@@ -176,7 +176,7 @@ class TradeValidator:
             return True
 
         # CHECK 3: Market hours (prevent late-night trading)
-        current_hour = datetime.utcnow().hour
+        current_hour = datetime.now(datetime.UTC).hour
         if 0 <= current_hour < 5:  # 00:00-05:00 GMT is low liquidity
             logger.info("Low liquidity hours - trading not recommended")
             return False
@@ -185,7 +185,7 @@ class TradeValidator:
 
     def _count_recent_losses(self, minutes: int = 60) -> int:
         """Count number of losses in recent time period"""
-        cutoff = datetime.utcnow().timestamp() - (minutes * 60)
+        cutoff = datetime.now(datetime.UTC).timestamp() - (minutes * 60)
         recent = [loss for loss in self.today_losses
                  if loss['timestamp'].timestamp() > cutoff]
         return len(recent)
@@ -196,7 +196,7 @@ class TradeValidator:
             self.today_losses.append({
                 'trade_id': trade_id,
                 'pnl': pnl,
-                'timestamp': datetime.utcnow()
+                'timestamp': datetime.now(datetime.UTC)
             })
 
         # Update today's loss amount
@@ -220,7 +220,7 @@ class TradeValidator:
                 'signal_type': data['signal'].signal_type.value,
                 'confidence': data['signal'].confidence,
                 'timestamp': data['timestamp'],
-                'age_seconds': (datetime.utcnow() - data['timestamp']).total_seconds()
+                'age_seconds': (datetime.now(datetime.UTC) - data['timestamp']).total_seconds()
             }
             for trade_id, data in self.pending_trades.items()
         }

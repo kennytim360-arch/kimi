@@ -48,7 +48,7 @@ class HistoricalStore:
         self.metadata[f"{symbol}_{interval}"] = {
             "symbol": symbol,
             "interval": interval,
-            "last_updated": datetime.utcnow().isoformat(),
+            "last_updated": datetime.now(datetime.UTC).isoformat(),
             "num_bars": len(df),
             "start_date": df.index.min().isoformat() if len(df) > 0 else None,
             "end_date": df.index.max().isoformat() if len(df) > 0 else None
@@ -81,7 +81,7 @@ class HistoricalStore:
             return True
 
         last_updated = datetime.fromisoformat(self.metadata[key]["last_updated"])
-        age = datetime.utcnow() - last_updated
+        age = datetime.now(datetime.UTC) - last_updated
 
         return age > timedelta(hours=max_age_hours)
 

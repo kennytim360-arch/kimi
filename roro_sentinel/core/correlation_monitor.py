@@ -33,7 +33,7 @@ class CorrelationStatus:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.utcnow()
+            self.timestamp = datetime.now(datetime.UTC)
 
 
 class CorrelationMonitor:
@@ -99,7 +99,7 @@ class CorrelationMonitor:
                 correlation=corr,
                 volatility=corr_vol,
                 health=health,
-                timestamp=datetime.utcnow(),
+                timestamp=datetime.now(datetime.UTC),
                 lookback_periods=lookback
             )
 
@@ -170,7 +170,7 @@ class CorrelationMonitor:
         recent = self.correlation_history[-20:]  # Last 20 checks
 
         report = {
-            "timestamp": datetime.utcnow(),
+            "timestamp": datetime.now(datetime.UTC),
             "overall_health": "HEALTHY",
             "pairs": {}
         }
