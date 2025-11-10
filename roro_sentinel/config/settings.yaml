@@ -1,6 +1,7 @@
 # config/settings.yaml
 system:
   mode: "paper"  # "paper" | "live" | "backtest"
+  data_source: "yahoo"  # "yahoo" (free, real-time-ish) | "ibkr" (requires account)
   timezone: "GMT"
   data_refresh_rate_ms: 60000  # 1-minute primary update
   correlation_update_rate_ms: 300000  # 5-minute correlation

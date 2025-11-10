@@ -241,18 +241,34 @@ class IBKRDataFeed(DataFeed):
 def create_data_feed(config: Dict) -> DataFeed:
     """Factory function to create appropriate data feed"""
     mode = config.get('system', {}).get('mode', 'paper')
+    data_source = config.get('system', {}).get('data_source', 'yahoo')
 
     if mode in ['paper', 'backtest']:
         logger.info("Using MockDataFeed for paper/backtest mode")
         return MockDataFeed(scenario="normal")
     elif mode == 'live':
-        logger.info("Attempting to connect to IBKR for live mode")
-        try:
-            feed = IBKRDataFeed()
-            asyncio.create_task(feed._connect_with_retry())
-            return feed
-        except Exception as e:
-            logger.error(f"Failed to create IBKR feed: {e}. Falling back to mock.")
+        # Try Yahoo Finance first (free, easy)
+        if data_source == 'yahoo':
+            try:
+                from .yahoo_data_feed import YahooDataFeed
+                logger.info("Using YahooDataFeed for live market data")
+                return YahooDataFeed()
+            except Exception as e:
+                logger.error(f"Failed to create Yahoo feed: {e}. Falling back to mock.")
+                return MockDataFeed(scenario="normal")
+
+        # IBKR option (requires setup)
+        elif data_source == 'ibkr':
+            logger.info("Attempting to connect to IBKR for live mode")
+            try:
+                feed = IBKRDataFeed()
+                asyncio.create_task(feed._connect_with_retry())
+                return feed
+            except Exception as e:
+                logger.error(f"Failed to create IBKR feed: {e}. Falling back to mock.")
+                return MockDataFeed(scenario="normal")
+        else:
+            logger.warning(f"Unknown data_source: {data_source}. Using mock.")
             return MockDataFeed(scenario="normal")
     else:
         raise ValueError(f"Unknown mode: {mode}")
